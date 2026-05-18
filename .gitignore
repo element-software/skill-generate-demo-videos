@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Playwright
+test-results/
+playwright-report/
+
+# Generated demo video artefacts — keep the directory structure but not the files
+demo-video/temp/*.webm
+demo-video/temp/*.json
+demo-video/output/*.mp4
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+*.swp

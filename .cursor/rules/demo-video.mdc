@@ -1,0 +1,57 @@
+---
+description: Rules for the generate-demo-video skill
+globs: ["demo-video/**", "scripts/demo-video/**"]
+alwaysApply: false
+---
+
+# skill-generate-demo-videos
+
+This repository is a **Cursor skill** for generating polished product/website demo videos using **Playwright** (video recording) and **FFmpeg** (post-processing).
+
+## How it works
+
+1. **Spec file** (`demo-video/specs/demo.spec.json`) — describes the project, brand, music, and the scripted user journey.
+2. **Capture** (`scripts/demo-video/capture-demo.ts`) — launches a headless Chromium browser with Playwright's `recordVideo` API enabled and executes the journey, producing a raw `.webm` file and a metadata JSON.
+3. **Render** (`scripts/demo-video/render-demo-video.mjs`) — uses FFmpeg to composite the final MP4: scaling, logo overlay, ASS captions, background music with fade-out.
+
+## Agent guidelines
+
+### Reading and improving the spec
+- Always **read the target website/app** before writing or updating the spec.
+- Inspect the DOM to find robust selectors (prefer `data-testid`, ARIA roles, or visible text over fragile CSS class names).
+- Walk through each journey step mentally; ensure navigation URLs, action selectors, and timings make sense.
+- Use `durationAfterActionsMs` generously (≥ 800 ms) on steps that show important UI state so captions are readable.
+
+### Playwright video recording
+- The tool uses Playwright's **`recordVideo`** context option — NOT just screenshots.
+- Do not replace `recordVideo` with screenshot-based approaches.
+- Keep `headless: true` for CI compatibility.
+
+### Actions
+Supported action types: `waitForLoad`, `navigate`, `click`, `fill`, `type`, `hover`, `scroll`, `wait`, `press`.
+- Prefer `waitForLoad` at the start of every URL-navigating step.
+- Use `scroll` with a `duration` value (ms) to produce smooth animated scrolling.
+- Use `wait` sparingly — prefer realistic timings over overly long pauses.
+
+### Output formats
+- **Landscape**: 1920×1080 MP4 (`demo-video/output/{outputName}-landscape.mp4`)
+- **Reel**: 1080×1920 MP4 (`demo-video/output/{outputName}-reel.mp4`)
+- When the user asks for "reel" or "portrait", generate the reel output.
+- When asked for "video" without qualification, generate the landscape output.
+- When asked for "both", generate both.
+
+### Music and branding
+- Music files go in `demo-video/assets/music/`.
+- Logo images go in `demo-video/assets/logos/`.
+- All paths in the spec are relative to the repo root.
+- If a music or logo file is missing, the tool will warn and continue without it.
+
+### Error handling
+- Missing FFmpeg → clear install instructions.
+- Missing spec → suggest creating one.
+- Invalid selector → warns and skips (so the rest of the video still renders).
+- Invalid spec JSON → Zod validation messages are printed.
+
+### Reusability
+This skill is designed to work for **any** website or web app.
+Never hardcode project-specific content in the scripts themselves — everything belongs in the spec JSON.
