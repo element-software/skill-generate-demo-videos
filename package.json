@@ -9,7 +9,9 @@
     "demo:video": "npm run demo:video:capture && npm run demo:video:render",
     "demo:video:reel:capture": "tsx scripts/demo-video/capture-demo.ts --mode=reel",
     "demo:video:reel:render": "node scripts/demo-video/render-demo-video.mjs --mode=reel",
-    "demo:video:reel": "npm run demo:video:reel:capture && npm run demo:video:reel:render"
+    "demo:video:reel": "npm run demo:video:reel:capture && npm run demo:video:reel:render",
+    "skill:install": "node scripts/install-skill.mjs",
+    "skill:install:global-commands": "node scripts/install-global-cursor-commands.mjs"
   },
   "dependencies": {
     "@playwright/test": "^1.44.0",
