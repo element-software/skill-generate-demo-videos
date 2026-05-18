@@ -1,0 +1,52 @@
+{
+  "projectName": "Example App",
+  "baseUrl": "https://example.com",
+  "outputName": "example-demo",
+  "brand": {
+    "logo": "demo-video/assets/logos/logo.png",
+    "primaryColour": "#22d3ee",
+    "background": "dark-gradient"
+  },
+  "music": {
+    "file": "demo-video/assets/music/soundtrack.mp3",
+    "startAt": 0,
+    "volume": 0.75,
+    "fadeOutSeconds": 4
+  },
+  "landscape": {
+    "enabled": true,
+    "width": 1920,
+    "height": 1080
+  },
+  "reel": {
+    "enabled": true,
+    "width": 1080,
+    "height": 1920,
+    "safeArea": {
+      "top": 180,
+      "bottom": 220,
+      "left": 80,
+      "right": 80
+    }
+  },
+  "journey": [
+    {
+      "title": "Open homepage",
+      "url": "/",
+      "caption": "A polished product demo generated with Playwright",
+      "durationAfterActionsMs": 1000,
+      "actions": [
+        { "type": "waitForLoad" },
+        { "type": "scroll", "y": 700, "duration": 1200 }
+      ]
+    },
+    {
+      "title": "Show interaction",
+      "caption": "Real clicks, typing, scrolling and transitions",
+      "actions": [
+        { "type": "click", "selector": "text=More information..." },
+        { "type": "wait", "ms": 1000 }
+      ]
+    }
+  ]
+}

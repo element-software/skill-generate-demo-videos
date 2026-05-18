@@ -1,0 +1,27 @@
+{
+  "name": "skill-generate-demo-videos",
+  "version": "1.0.0",
+  "description": "Spec-driven tool that generates polished demo videos using Playwright and FFmpeg",
+  "type": "module",
+  "scripts": {
+    "demo:video:capture": "tsx scripts/demo-video/capture-demo.ts --mode=landscape",
+    "demo:video:render": "node scripts/demo-video/render-demo-video.mjs --mode=landscape",
+    "demo:video": "npm run demo:video:capture && npm run demo:video:render",
+    "demo:video:reel:capture": "tsx scripts/demo-video/capture-demo.ts --mode=reel",
+    "demo:video:reel:render": "node scripts/demo-video/render-demo-video.mjs --mode=reel",
+    "demo:video:reel": "npm run demo:video:reel:capture && npm run demo:video:reel:render"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.44.0",
+    "playwright": "^1.44.0",
+    "tsx": "^4.11.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
