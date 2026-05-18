@@ -128,8 +128,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
   const events = captions
     .map((c) => {
-      // Escape braces and special characters in ASS
-      const text = c.text.replace(/\{/g, "\\{").replace(/\}/g, "\\}");
+      // Escape backslash first, then braces (special characters in ASS format)
+      const text = c.text
+        .replace(/\\/g, "\\\\")
+        .replace(/\{/g, "\\{")
+        .replace(/\}/g, "\\}");
       return `Dialogue: 0,${toAssTime(c.startSeconds)},${toAssTime(c.endSeconds)},Default,,0,0,0,,${text}`;
     })
     .join("\n");
@@ -186,8 +189,20 @@ function buildFilterComplex(opts) {
 
   // 3. Burn in ASS captions
   if (assPath) {
-    // Escape Windows backslashes and colons for FFmpeg filter syntax
-    const escapedAssPath = assPath.replace(/\\/g, "/").replace(/:/g, "\\:");
+    // Normalise path for FFmpeg filter syntax. The path is always produced by
+    // os.tmpdir() (not user input) so it contains no single quotes.
+    // Step 1: convert Windows backslash separators to forward slashes so the
+    //         path is valid across platforms in FFmpeg filter strings.
+    // Step 2: escape single quotes to prevent breaking the surrounding '...' quoting.
+    // Step 3: escape colons – FFmpeg uses ':' as an argument separator inside
+    //         filter_complex, so the Windows drive-letter colon (e.g. C:/) must
+    //         become C\:/ after step 1 has already removed all other backslashes.
+    //         This order is intentional: escaping ':' before step 1 would
+    //         introduce new backslashes that step 1 would then incorrectly convert.
+    const escapedAssPath = assPath
+      .replace(/\\/g, "/")
+      .replace(/'/g, "\\'")
+      .replace(/:/g, "\\:");
     const outLabel = "[v_captions]";
     filters.push(`${currentLabel}ass='${escapedAssPath}'${outLabel}`);
     currentLabel = outLabel;
