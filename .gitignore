@@ -13,6 +13,12 @@ demo-video/temp/*.webm
 demo-video/temp/*.json
 demo-video/output/*.mp4
 
+# Ensure placeholder files are tracked
+!demo-video/temp/.gitkeep
+!demo-video/output/.gitkeep
+!demo-video/assets/music/.gitkeep
+!demo-video/assets/logos/.gitkeep
+
 # macOS
 .DS_Store
 
